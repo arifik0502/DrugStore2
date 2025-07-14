@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apochetary Cartel - Your Trusted Online Pharmacy</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h1><i class="fas fa-pills"></i> Apochetary Cartel</h1>
+            </div>
+            
+            <div class="nav-menu">
+                <a href="#home" class="nav-link active">Home</a>
+                <div class="dropdown">
+                    <a href="#products" class="nav-link">Products <i class="fas fa-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <a href="#prescription">Prescription Drugs</a>
+                        <a href="#otc">Over-the-Counter</a>
+                        <a href="#vitamins">Vitamins & Supplements</a>
+                        <a href="#personal-care">Personal Care</a>
+                        <a href="#first-aid">First Aid</a>
+                    </div>
+                </div>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
+            
+            <div class="nav-actions">
+                <div class="search-box">
+                    <input type="text" placeholder="Search products..." id="searchInput">
+                    <button type="button" onclick="searchProducts()"><i class="fas fa-search"></i></button>
+                </div>
+                
+                <a href="#cart" class="nav-link cart-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">3</span>
+                </a>
+                
+                <div class="dropdown">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-user"></i> John Doe
+                    </a>
+                    <div class="dropdown-content">
+                        <a href="#profile">Profile</a>
+                        <a href="#orders">My Orders</a>
+                        <a href="#prescriptions">My Prescriptions</a>
+                        <a href="#logout">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Your Health, Our Priority</h1>
+                <p>Trusted online pharmacy delivering quality medications and healthcare products to your doorstep with professional care and expertise.</p>
+                <div class="hero-buttons">
+                    <a href="#products" class="btn btn-primary">Shop Now</a>
+                    <a href="#about" class="btn btn-secondary">Learn More</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <i class="fas fa-prescription-bottle-alt"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2>Why Choose Apochetary Cartel?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Safe & Secure</h3>
+                    <p>All medications are sourced from licensed suppliers and verified by our certified pharmacists for your safety and peace of mind.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-truck"></i>
+                    <h3>Fast Delivery</h3>
+                    <p>Quick and reliable delivery to your doorstep with secure packaging and temperature-controlled shipping when needed.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-user-md"></i>
+                    <h3>Expert Support</h3>
+                    <p>Licensed pharmacists available 24/7 for consultation, medication guidance, and answering your health questions.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-file-prescription"></i>
+                    <h3>Prescription Management</h3>
+                    <p>Easy prescription upload, verification process, and automatic refill reminders to keep you on track.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="featured-products">
+        <div class="container">
+            <h2>Featured Products</h2>
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-image">
+                        <i class="fas fa-pills"></i>
+                        <span class="prescription-badge">Rx</span>
+                    </div>
+                    <div class="product-info">
+                        <h3>Amoxicillin 500mg</h3>
+                        <p class="product-category">Antibiotics</p>
+                        <div class="product-price">$24.99</div>
+                        <div class="product-actions">
+                            <a href="#product-details" class="btn btn-primary btn-sm">View Details</a>
+                            <button onclick="addToCart(1)" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <i class="fas fa-tablets"></i>
+                    </div>
+                    <div class="product-info">
+                        <h3>Ibuprofen 200mg</h3>
+                        <p class="product-category">Pain Relief</p>
+                        <div class="product-price">$8.99</div>
+                        <div class="product-actions">
+                            <a href="#product-details" class="btn btn-primary btn-sm">View Details</a>
+                            <button onclick="addToCart(2)" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <i class="fas fa-capsules"></i>
+                    </div>
+                    <div class="product-info">
+                        <h3>Vitamin D3 1000 IU</h3>
+                        <p class="product-category">Vitamins & Supplements</p>
+                        <div class="product-price">$15.99</div>
+                        <div class="product-actions">
+                            <a href="#product-details" class="btn btn-primary btn-sm">View Details</a>
+                            <button onclick="addToCart(3)" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <i class="fas fa-prescription-bottle"></i>
+                        <span class="prescription-badge">Rx</span>
+                    </div>
+                    <div class="product-info">
+                        <h3>Metformin 500mg</h3>
+                        <p class="product-category">Diabetes Care</p>
+                        <div class="product-price">$18.99</div>
+                        <div class="product-actions">
+                            <a href="#product-details" class="btn btn-primary btn-sm">View Details</a>
+                            <button onclick="addToCart(4)" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <i class="fas fa-pump-medical"></i>
+                    </div>
+                    <div class="product-info">
+                        <h3>Hand Sanitizer 500ml</h3>
+                        <p class="product-category">Personal Care</p>
+                        <div class="product-price">$6.99</div>
+                        <div class="product-actions">
+                            <a href="#product-details" class="btn btn-primary btn-sm">View Details</a>
+                            <button onclick="addToCart(5)" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <i class="fas fa-thermometer"></i>
+                    </div>
+                    <div class="product-info">
+                        <h3>Digital Thermometer</h3>
+                        <p class="product-category">Medical Devices</p>
+                        <div class="product-price">$12.99</div>
+                        <div class="product-actions">
+                            <a href="#product-details" class="btn btn-primary btn-sm">View Details</a>
+                            <button onclick="addToCart(6)" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <i class="fas fa-band-aid"></i>
+                    </div>
+                    <div class="product-info">
+                        <h3>Adhesive Bandages</h3>
+                        <p class="product-category">First Aid</p>
+                        <div class="product-price">$4.99</div>
+                        <div class="product-actions">
+                            <a href="#product-details" class="btn btn-primary btn-sm">View Details</a>
+                            <button onclick="addToCart(7)" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <i class="fas fa-eye-dropper"></i>
+                    </div>
+                    <div class="product-info">
+                        <h3>Eye Drops</h3>
+                        <p class="product-category">Eye Care</p>
+                        <div class="product-price">$9.99</div>
+                        <div class="product-actions">
+                            <a href="#product-details" class="btn btn-primary btn-sm">View Details</a>
+                            <button onclick="addToCart(8)" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <a href="#all-products" class="btn btn-primary">View All Products</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Apochetary Cartel</h3>
+                    <p>Your trusted online pharmacy, committed to providing safe, effective medications and healthcare products with professional service and care.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#products">Products</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                        <li><a href="#privacy">Privacy Policy</a></li>
+                        <li><a href="#terms">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="#prescription">Prescription Drugs</a></li>
+                        <li><a href="#otc">Over-the-Counter</a></li>
+                        <li><a href="#vitamins">Vitamins & Supplements</a></li>
+                        <li><a href="#personal-care">Personal Care</a></li>
+                        <li><a href="#medical-devices">Medical Devices</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact Info</h4>
+                    <p><i class="fas fa-phone"></i> +1-800-PHARMACY (1-800-742-7629)</p>
+                    <p><i class="fas fa-envelope"></i> support@apochetary.com</p>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Health Street, Medical City, HC 12345</p>
+                    <p><i class="fas fa-clock"></i> 24/7 Customer Support</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Apochetary Cartel. All rights reserved. | Licensed Online Pharmacy</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>
