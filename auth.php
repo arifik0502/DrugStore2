@@ -1,109 +1,123 @@
 <?php
-// api/auth.php
-require_once '../config/database.php';
-require_once '../config/auth.php';
 
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
-header('Content-Type: application/json');
+// config/auth.php
+class Auth {
+    private $conn;
+    private $table_name = "users";
+    private $tokens_table = "user_tokens";
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    exit(0);
+    public function __construct($db) {
+        $this->conn = $db;
+    }
+
+    public function register($username, $email, $password, $first_name, $last_name, $phone = null, $address = null) {
+        $query = "INSERT INTO " . $this->table_name . " 
+                 (username, email, password_hash, first_name, last_name, phone, address) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?)";
+        
+        $stmt = $this->conn->prepare($query);
+        $password_hash = password_hash($password, PASSWORD_DEFAULT);
+        
+        if($stmt->execute([$username, $email, $password_hash, $first_name, $last_name, $phone, $address])) {
+            return $this->conn->lastInsertId();
+        }
+        return false;
+    }
+
+    public function login($username, $password) {
+        $query = "SELECT id, username, email, password_hash, first_name, last_name 
+                 FROM " . $this->table_name . " 
+                 WHERE (username = ? OR email = ?) AND is_active = 1";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([$username, $username]);
+        
+        if($stmt->rowCount() > 0) {
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            if(password_verify($password, $user['password_hash'])) {
+                $token = $this->generateToken($user['id']);
+                return [
+                    'user' => $user,
+                    'token' => $token
+                ];
+            }
+        }
+        return false;
+    }
+
+    public function generateToken($user_id) {
+        $token = bin2hex(random_bytes(32));
+        $expires_at = date('Y-m-d H:i:s', strtotime('+24 hours'));
+        
+        $query = "INSERT INTO " . $this->tokens_table . " (user_id, token, expires_at) VALUES (?, ?, ?)";
+        $stmt = $this->conn->prepare($query);
+        
+        if($stmt->execute([$user_id, $token, $expires_at])) {
+            return $token;
+        }
+        return false;
+    }
+
+    public function validateToken($token) {
+        $query = "SELECT u.id, u.username, u.email, u.first_name, u.last_name 
+                 FROM " . $this->tokens_table . " t
+                 JOIN " . $this->table_name . " u ON t.user_id = u.id
+                 WHERE t.token = ? AND t.expires_at > NOW() AND u.is_active = 1";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([$token]);
+        
+        if($stmt->rowCount() > 0) {
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+        return false;
+    }
+
+    public function logout($token) {
+        $query = "DELETE FROM " . $this->tokens_table . " WHERE token = ?";
+        $stmt = $this->conn->prepare($query);
+        return $stmt->execute([$token]);
+    }
+
+    public function getUserByToken($token) {
+        return $this->validateToken($token);
+    }
 }
 
-$database = new Database();
-$db = $database->getConnection();
-$auth = new Auth($db);
+// Helper function to get authorization header
+function getAuthorizationHeader() {
+    $headers = null;
+    if (isset($_SERVER['Authorization'])) {
+        $headers = trim($_SERVER["Authorization"]);
+    }
+    else if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+        $headers = trim($_SERVER["HTTP_AUTHORIZATION"]);
+    } elseif (function_exists('apache_request_headers')) {
+        $requestHeaders = apache_request_headers();
+        $requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
+        if (isset($requestHeaders['Authorization'])) {
+            $headers = trim($requestHeaders['Authorization']);
+        }
+    }
+    return $headers;
+}
 
-$method = $_SERVER['REQUEST_METHOD'];
-$path = $_SERVER['PATH_INFO'] ?? '';
+// Helper function to get bearer token
+function getBearerToken() {
+    $headers = getAuthorizationHeader();
+    if (!empty($headers)) {
+        if (preg_match('/Bearer\s(\S+)/', $headers, $matches)) {
+            return $matches[1];
+        }
+    }
+    return null;
+}
 
-switch($method) {
-    case 'POST':
-        if($path === '/register') {
-            $data = json_decode(file_get_contents("php://input"), true);
-            
-            if(empty($data['username']) || empty($data['email']) || empty($data['password']) || 
-               empty($data['first_name']) || empty($data['last_name'])) {
-                sendResponse(['error' => 'Missing required fields'], 400);
-            }
-            
-            $user_id = $auth->register(
-                $data['username'],
-                $data['email'],
-                $data['password'],
-                $data['first_name'],
-                $data['last_name'],
-                $data['phone'] ?? null,
-                $data['address'] ?? null
-            );
-            
-            if($user_id) {
-                sendResponse(['message' => 'User registered successfully', 'user_id' => $user_id]);
-            } else {
-                sendResponse(['error' => 'Registration failed'], 400);
-            }
-        }
-        elseif($path === '/login') {
-            $data = json_decode(file_get_contents("php://input"), true);
-            
-            if(empty($data['username']) || empty($data['password'])) {
-                sendResponse(['error' => 'Username and password required'], 400);
-            }
-            
-            $result = $auth->login($data['username'], $data['password']);
-            
-            if($result) {
-                sendResponse([
-                    'message' => 'Login successful',
-                    'user' => [
-                        'id' => $result['user']['id'],
-                        'username' => $result['user']['username'],
-                        'email' => $result['user']['email'],
-                        'first_name' => $result['user']['first_name'],
-                        'last_name' => $result['user']['last_name']
-                    ],
-                    'token' => $result['token']
-                ]);
-            } else {
-                sendResponse(['error' => 'Invalid credentials'], 401);
-            }
-        }
-        elseif($path === '/logout') {
-            $token = getBearerToken();
-            
-            if(!$token) {
-                sendResponse(['error' => 'Token required'], 401);
-            }
-            
-            if($auth->logout($token)) {
-                sendResponse(['message' => 'Logout successful']);
-            } else {
-                sendResponse(['error' => 'Logout failed'], 400);
-            }
-        }
-        break;
-        
-    case 'GET':
-        if($path === '/user') {
-            $token = getBearerToken();
-            
-            if(!$token) {
-                sendResponse(['error' => 'Token required'], 401);
-            }
-            
-            $user = $auth->getUserByToken($token);
-            
-            if($user) {
-                sendResponse(['user' => $user]);
-            } else {
-                sendResponse(['error' => 'Invalid token'], 401);
-            }
-        }
-        break;
-        
-    default:
-        sendResponse(['error' => 'Method not allowed'], 405);
+// Response helper
+function sendResponse($data, $status = 200) {
+    http_response_code($status);
+    header('Content-Type: application/json');
+    echo json_encode($data);
+    exit;
 }
 ?>

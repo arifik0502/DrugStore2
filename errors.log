@@ -1,0 +1,7 @@
+[2025-07-15 17:58:57] Database error during registration: SQLSTATE[HY000]: General error: 1364 Field 'first_name' doesn't have a default value
+[2025-07-15 17:59:32] Failed login attempt for identifier: ariefffikri936@gmail.com
+[2025-07-15 17:59:50] Database error during registration: SQLSTATE[HY000]: General error: 1364 Field 'first_name' doesn't have a default value
+[2025-07-15 18:04:47] Database error during registration: SQLSTATE[HY000]: General error: 1364 Field 'first_name' doesn't have a default value
+[2025-07-15 18:05:08] Database error during registration: SQLSTATE[HY000]: General error: 1364 Field 'first_name' doesn't have a default value
+[2025-07-15 18:08:54] Database error during registration: SQLSTATE[HY000]: General error: 1364 Field 'first_name' doesn't have a default value
+[2025-07-15 18:09:06] Database error during registration: SQLSTATE[HY000]: General error: 1364 Field 'first_name' doesn't have a default value
